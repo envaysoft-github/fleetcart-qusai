@@ -36,7 +36,7 @@ class PaymentServiceProvider extends ServiceProvider
         if (!config('app.installed')) {
             return;
         }
-
+        $this->registerZcredit();
         $this->registerPayPalExpress();
         $this->registerStripe();
         $this->registerPaytm();
@@ -54,7 +54,7 @@ class PaymentServiceProvider extends ServiceProvider
         $this->registerCashOnDelivery();
         $this->registerBankTransfer();
         $this->registerCheckPayment();
-        $this->registerZcredit();
+
 
     }
 
@@ -66,6 +66,12 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function register()
     {
+    }
+
+    private function registerZcredit(){
+        if ($this->enabled('zcredit')) {
+            Gateway::register('zcredit', new Zcredit());
+        }
     }
 
 
@@ -211,9 +217,5 @@ class PaymentServiceProvider extends ServiceProvider
         }
     }
 
-    private function registerZcredit(){
-        if ($this->enabled('zcredit')) {
-            Gateway::register('zcredit', new Zcredit());
-        }
-    }
+
 }
