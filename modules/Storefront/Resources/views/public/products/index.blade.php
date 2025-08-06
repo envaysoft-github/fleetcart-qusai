@@ -62,7 +62,7 @@
         FleetCart.data['initialCategorySlug'] = '{{ addslashes(request('category')) }}';
         FleetCart.data['initialTagName'] = '{{ addslashes($tagName ?? '') }}';
         FleetCart.data['initialTagSlug'] = '{{ addslashes(request('tag')) }}';
-        FleetCart.data['initialAttribute'] = {{ json_encode(request('attribute', [])) }};
+        FleetCart.data['initialAttribute'] = @json((object) request('attribute', []));
         FleetCart.data['minPrice'] = {{ $minPrice }};
         FleetCart.data['maxPrice'] = {{ $maxPrice }};
         FleetCart.data['initialSort'] = '{{ addslashes(request('sort', 'latest')) }}';
