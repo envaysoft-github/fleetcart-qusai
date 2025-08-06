@@ -31,9 +31,6 @@
                                 <template x-if="address.address_2">
                                     <span x-text="address.address_2"></span>
                                 </template>
-
-                                <span x-html="`${address.city}, ${address.state_name ?? address.state} ${address.zip}`"></span>
-                                <span x-text="address.country_name"></span>
                             </div>
                         </address>
                     </div>
@@ -127,110 +124,6 @@
                             placeholder="{{ trans('checkout::attributes.billing.address_2') }}"
                             x-model="form.billing.address_2"
                         >
-                    </div>
-                </div>
-
-                <div class="col-md-9">
-                    <div class="form-group">
-                        <label for="billing-city">
-                            {{ trans('checkout::attributes.billing.city') }}<span>*</span>
-                        </label>
-
-                        <input
-                            type="text"
-                            name="billing[city]"
-                            :value="form.billing.city"
-                            id="billing-city"
-                            class="form-control"
-                            @change="changeBillingCity($event.target.value)"
-                        >
-
-                        <template x-if="errors.has('billing.city')">
-                            <span class="error-message" x-text="errors.get('billing.city')"></span>
-                        </template>
-                    </div>
-                </div>
-
-                <div class="col-md-9">
-                    <div class="form-group">
-                        <label for="billing-zip">
-                            {{ trans('checkout::attributes.billing.zip') }}<span>*</span>
-                        </label>
-
-                        <input
-                            type="text"
-                            name="billing[zip]"
-                            :value="form.billing.zip"
-                            id="billing-zip"
-                            class="form-control"
-                            @change="changeBillingZip($event.target.value)"
-                        >
-
-                        <template x-if="errors.has('billing.zip')">
-                            <span class="error-message" x-text="errors.get('billing.zip')"></span>
-                        </template>
-                    </div>
-                </div>
-
-                <div class="col-md-9">
-                    <div class="form-group">
-                        <label for="billing-country">
-                            {{ trans('checkout::attributes.billing.country') }}<span>*</span>
-                        </label>
-
-                        <select
-                            name="billing[country]"
-                            id="billing-country"
-                            class="form-control arrow-black"
-                            @change="changeBillingCountry($event.target.value)"
-                        >
-                            <option value="">{{ trans('storefront::checkout.please_select') }}</option>
-                            
-                            <template x-for="(name, code) in countries" :key="code">
-                                <option :value="code" x-text="name"></option>
-                            </template>
-                        </select>
-
-                        <template x-if="errors.has('billing.country')">
-                            <span class="error-message" x-text="errors.get('billing.country')"></span>
-                        </template>
-                    </div>
-                </div>
-
-                <div class="col-md-9">
-                    <div class="form-group">
-                        <label for="billing-state">
-                            {{ trans('checkout::attributes.billing.state') }}<span>*</span>
-                        </label>
-
-                        <template x-if="!hasBillingStates">
-                            <input
-                                type="text"
-                                name="billing[state]"
-                                id="billing-state"
-                                class="form-control"
-                                x-model="form.billing.state"
-                            >
-                        </template>
-
-                        <template x-if="hasBillingStates">
-                            <select
-                                name="billing[state]"
-                                id="billing-state"
-                                class="form-control arrow-black"
-                                @change="changeBillingState($event.target.value)"
-                            >
-                                <option value="">{{ trans('storefront::checkout.please_select') }}</option>
-
-                                <template x-for="(name, code) in states.billing" :key="code">
-                                    <option :value="code" x-html="name"></option>
-                                </template>
-                            </select>
-                        </template>
-
-                        <template x-if="errors.has('billing.state')">
-                            <span class="error-message" x-text="errors.get('billing.state')"></span>
-                        </template>
                     </div>
                 </div>
             </div>

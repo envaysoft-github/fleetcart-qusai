@@ -50,9 +50,6 @@
                                             <template x-if="address.address_2">
                                                 <span x-text="address.address_2"></span>
                                             </template>
-
-                                            <span x-html="`${address.city}, ${address.state_name ?? address.state} ${address.zip}`"></span>
-                                            <span x-text="address.country_name"></span>
                                         </div>
 
                                         <div class="address-card-actions">
