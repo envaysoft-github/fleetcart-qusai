@@ -222,9 +222,9 @@ return [
     'translatable.zcredit_instructions' => 'Instructions',
     'zcredit_key' => 'Key',
     'zcredit_holderid' => 'Holder ID',
-    'zcredit_holder_phone' => 'Phone',
+    'zcredit_holder_phone' => 'Phone Number',
     'zcredit_holder_email' => 'Email',
-    'zcredit_installment_option' => 'Installment Option',
+    'zcredit_installment_type' => 'Installment Type',
     'zcredit_installment_min' => 'Minimum Installment Quantity',
     'zcredit_installment_max' => 'Minimum Installment Quantity',
 

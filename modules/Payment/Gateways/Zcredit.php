@@ -73,7 +73,7 @@ class Zcredit implements GatewayInterface
             });
 
         $installment =             [
-        "Type" => setting('zcredit_installment_option','none'),
+        "Type" => setting('zcredit_installment_type','none'),
         "MinQuantity" => setting('zcredit_installment_min',1),
         "MaxQuantity" => setting('zcredit_installment_max', 12),
     ];

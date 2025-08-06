@@ -7,7 +7,7 @@
         {{ Form::select('zcredit_holderid', trans('setting::attributes.zcredit_holderid'), $errors, $options, $settings, ['required' => true]) }}
         {{ Form::select('zcredit_holder_phone', trans('setting::attributes.zcredit_holder_phone'), $errors, $options, $settings, ['required' => true]) }}
         {{ Form::select('zcredit_holder_email', trans('setting::attributes.zcredit_holder_email'), $errors, $options, $settings, ['required' => true]) }}
-        {{ Form::select('zcredit_installment_option', trans('setting::attributes.zcredit_installment_option'), $errors, $installment_options, $settings, ['required' => true]) }}
+        {{ Form::select('zcredit_installment_type', trans('setting::attributes.zcredit_installment_type'), $errors, $installment_options, $settings, ['required' => true]) }}
         {{ Form::number(
             'zcredit_installment_min',
             trans('setting::attributes.zcredit_installment_min'),
