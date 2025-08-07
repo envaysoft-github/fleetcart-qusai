@@ -1,7 +1,36 @@
 .product-filter-wrap {
-    &.custom-scrollbar {
-        // overflow-x: hidden;
-        // overflow-y: auto;
+    .product-filter-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 20px;
+        background: var(--color-white);
+        border-bottom: 1px solid #e2e8f0;
+
+        > svg {
+            display: block;
+            width: 18px;
+            height: 18px;
+            transition: var(--transition-150);
+            cursor: pointer;
+
+            path {
+                stroke: var(--color-black);
+                transition: var(--transition-150);
+            }
+
+            &:hover {
+                path {
+                    stroke: var(--color-primary);
+                }
+            }
+        }
+    }
+
+    .product-filter-content {
+        &.custom-scrollbar {
+            overflow-y: initial;
+        }
     }
 }
 
@@ -25,54 +54,27 @@
             visibility: visible;
         }
 
-        &.custom-scrollbar {
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
+        .product-filter-content {
+            height: calc(100% - 53px);
+            padding: 20px;
 
-        // .filter-section-header {
-        //     display: flex;
-        //     justify-content: space-between;
-        //     align-items: center;
-        //     margin-bottom: 24px;
-        //     padding: 12px 20px;
-        //     background: var(--color-white);
-        //     border-bottom: 1px solid #e2e8f0;
-
-        //     > svg {
-        //         display: block;
-        //         width: 18px;
-        //         height: 18px;
-        //         transition: var(--transition-150);
-        //         cursor: pointer;
-
-        //         path {
-        //             stroke: var(--color-black);
-        //             transition: var(--transition-150);
-        //         }
-
-        //         &:hover {
-        //             path {
-        //                 stroke: var(--color-primary);
-        //             }
-        //         }
-        //     }
-        // }
-
-        .section-title {
-            font-weight: var(--font-medium);
-            margin-bottom: 0;
-            padding-bottom: 0;
-            color: var(--color-black);
-            border-bottom: none;
-
-            &:after {
-                content: none;
+            &.custom-scrollbar {
+                overflow-x: hidden;
+                overflow-y: auto;
             }
         }
 
-        .filter-section-inner {
-            padding: 20px;
+        .browse-categories-wrap {
+            > h6 {
+                font-size: 16px;
+                margin-bottom: 15px;
+            }
+        }
+
+        .product-filter-content {
+            .section-title {
+                display: none;
+            }
         }
     }
 }

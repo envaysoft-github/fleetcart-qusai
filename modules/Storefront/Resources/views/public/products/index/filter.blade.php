@@ -3,10 +3,6 @@
         <h4 class="section-title">
             {{ trans('storefront::products.filters') }}
         </h4>
-        
-        <svg @click="$store.layout.closeSidebarFilter()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M15.8338 4.16663L4.16705 15.8333M4.16705 4.16663L15.8338 15.8333" stroke="#0E1E3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
     </div>
 
     <div class="filter-section-inner custom-scrollbar">

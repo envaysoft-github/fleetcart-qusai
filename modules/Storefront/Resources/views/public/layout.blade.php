@@ -77,7 +77,7 @@
         class="page-template {{ is_rtl() ? 'rtl' : 'ltr' }}"
         data-theme-color="{{ $themeColor->toHexString() }}"
     >
-        <div x-data="App" class="wrapper">
+        <div x-data="App" class="wrapper overflow-x-hidden">
             @include('storefront::public.layouts.top_nav')
             @include('storefront::public.layouts.header')
             @include('storefront::public.layouts.navigation')

@@ -2,6 +2,7 @@
 
 return [
     'browse_categories' => 'Browse Categories',
+    'categories' => 'Categories',
     'price' => 'Price',
     'filters' => 'Filters',
     'latest_products' => 'Latest Products',
