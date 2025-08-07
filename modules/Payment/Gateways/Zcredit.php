@@ -37,28 +37,7 @@ class Zcredit implements GatewayInterface
             throw new Exception(trans('payment::messages.currency_not_supported'));
         }
 
-//        dd(setting('zcredit_holderid','none'));
-//        dd($order->products);
-//        dd(currency());
-
-
-
-//        dd($items = $order->products);
-
-
-
-
-
-
             $items = $order->products->map(function ($orderProduct) {
-
-
-
-
-//               dd($orderProduct->product->base_image->first()->path);
-
-                $image = $orderProduct->product->base_image->first()->path ?? "";
-
                 $amount = number_format($orderProduct->line_total->amount(), 2, '.', '');
                 return [
                     "Amount" => $amount,
@@ -102,8 +81,6 @@ class Zcredit implements GatewayInterface
           ],
       ];
 
-//      dd(locale());
-
       $payloads = [
           'Local'=> ucfirst(locale()),
           'UniqueId'=> implode('-',[$order->id,Carbon::now()->timestamp]),
@@ -119,8 +96,6 @@ class Zcredit implements GatewayInterface
       ];
 
        $response = $zcredit->createZCreditSession($payloads);
-//       dd($response );
-
         return new ZcreditResponse($order, $response);
 
     }

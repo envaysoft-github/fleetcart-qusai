@@ -226,7 +226,7 @@ return [
     'zcredit_holder_email' => 'Email',
     'zcredit_installment_type' => 'Installment Type',
     'zcredit_installment_min' => 'Minimum Installment Quantity',
-    'zcredit_installment_max' => 'Minimum Installment Quantity',
+    'zcredit_installment_max' => 'Maximum Installment Quantity',
 
     # validation
     'supported_countries.*' => 'Supported Countries',

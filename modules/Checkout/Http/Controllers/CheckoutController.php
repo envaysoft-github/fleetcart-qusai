@@ -62,7 +62,6 @@ class CheckoutController extends Controller
     public function store(StoreOrderRequest $request, CustomerService $customerService, OrderService $orderService)
     {
       $this->fixExtraAddress($request);
-//      dd($request->all());
         if (auth()->guest() && $request->create_an_account) {
             $customerService->register($request)->login();
         }
