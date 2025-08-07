@@ -597,7 +597,15 @@ class SettingTabs extends Tabs
 
             $tab->fields(['zcredit_enabled', 'translatable.zcredit_label', 'translatable.zcredit_description', 'translatable.zcredit_instructions']);
 
-            $tab->view('setting::admin.settings.tabs.zcredit');
+            $tab->view('setting::admin.settings.tabs.zcredit',[
+                'options'=> ['required'=>'Required','none'=>'None','optional'=>'Optional',],
+                'installment_options'=> [
+                    'none'=>'No installments',
+                    'regular'=>'Regular installments',
+                    'credit'=>'Credit installments',
+                    'usersChoice'=>'User can choose the installments',
+                    ]
+            ]);
         });
     }
 }

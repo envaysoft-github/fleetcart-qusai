@@ -31,11 +31,13 @@ class Zcredit implements GatewayInterface
 
     public function purchase(Order $order, Request $request): ZcreditResponse
     {
-//        dd($order->products);
-//        dd(currency());
+        $supported_currencies = ['USD', 'EUR', 'NIS', 'ILS'];
+
+        if (!in_array(currency(), $supported_currencies)) {
+            throw new Exception(trans('payment::messages.currency_not_supported'));
+        }
 
             $items = $order->products->map(function ($orderProduct) {
-//                dd($orderProduct->product->name);
                 $amount = number_format($orderProduct->line_total->amount(), 2, '.', '');
                 return [
                     "Amount" => $amount,
@@ -43,11 +45,19 @@ class Zcredit implements GatewayInterface
                     "Name" => $orderProduct->product->name ?? 'N/A',
                     "Description" => $orderProduct->product->sku ?? '',
                     "Quantity" => (int) $orderProduct->qty,
-                    "Image" => "",
+                    "Image" =>  ($orderProduct->product->variant && $orderProduct->product->variant->base_image->id) ? $orderProduct->product->variant->base_image?->path : $orderProduct->product->base_image?->path ?? asset('build/assets/image-placeholder.png'),
                     "IsTaxFree" => "false",
                     "AdjustAmount" => "false",
                 ];
             });
+
+        $installment =             [
+        "Type" => setting('zcredit_installment_type','none'),
+        "MinQuantity" => setting('zcredit_installment_min',1),
+        "MaxQuantity" => setting('zcredit_installment_max', 12),
+    ];
+
+
 
 
 
@@ -64,14 +74,12 @@ class Zcredit implements GatewayInterface
           "Name" => implode(" ", [$order->customer_first_name, $order->customer_last_name]),
           "PhoneNumber" => $order->customer_phone,
           "Attributes" => [
-              "HolderId" => "none",
-              "Name" => "required",
-              "PhoneNumber" => "required",
-              "Email" => "optional",
+              "HolderId" => setting('zcredit_holderid','none'),
+              "Name" => setting('zcredit_holder_name','none'),
+              "PhoneNumber" => setting('zcredit_holder_phone','none'),
+              "Email" => setting('zcredit_holder_email','none'),
           ],
       ];
-
-//      dd(locale());
 
       $payloads = [
           'Local'=> ucfirst(locale()),
@@ -84,11 +92,10 @@ class Zcredit implements GatewayInterface
           'Customer'=> $customer,
           'CartItems'=>  $items,
           'CreateInvoice'=> false,
+          'Installments'=> $installment,
       ];
 
        $response = $zcredit->createZCreditSession($payloads);
-//       dd($response );
-
         return new ZcreditResponse($order, $response);
 
     }

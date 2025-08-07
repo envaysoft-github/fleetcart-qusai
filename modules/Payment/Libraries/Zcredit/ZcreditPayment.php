@@ -96,10 +96,6 @@ class ZcreditPayment
             'Content-Type' => 'application/json',
         ])->post('https://pci.zcredit.co.il/webcheckout/api/WebCheckout/CreateSession', $payload);
 
-//        dd($response->body());
-
-
-
         // Return as array (or throw error if needed)
         return $response->json();
     }

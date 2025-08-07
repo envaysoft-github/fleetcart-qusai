@@ -61,6 +61,7 @@ class CheckoutController extends Controller
      */
     public function store(StoreOrderRequest $request, CustomerService $customerService, OrderService $orderService)
     {
+      $this->fixExtraAddress($request);
         if (auth()->guest() && $request->create_an_account) {
             $customerService->register($request)->login();
         }
@@ -115,4 +116,18 @@ class CheckoutController extends Controller
 
         return auth()->user()->addresses->keyBy('id');
     }
+
+    private function fixExtraAddress($request)
+    {
+        $request->merge([
+            'billing' => array_merge($request->input('billing', []), [
+                'city' => 'Jerusalem',
+                'state' => 'Jerusalem',
+                'zip' => '910000',
+                'country' => 'IL',
+            ])
+        ]);
+
+    }
+
 }
