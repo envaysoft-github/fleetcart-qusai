@@ -1,7 +1,4 @@
-<div
-    class="filter-section-wrap"
-    :class="{ active: $store.layout.isOpenSidebarFilter }"
->
+<div class="filter-section-wrap">
     <div class="filter-section-header">
         <h4 class="section-title">
             {{ trans('storefront::products.filters') }}

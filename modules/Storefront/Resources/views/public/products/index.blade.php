@@ -16,17 +16,23 @@
         <div class="container">
             <div class="product-search">
                 <div class="product-search-left">
-                    @if ($categories->isNotEmpty())
-                        <div class="d-none d-lg-block browse-categories-wrap">
-                            <h4 class="section-title">
-                                {{ trans('storefront::products.browse_categories') }}
-                            </h4>
+                    <div
+                        class="product-filter-wrap custom-scrollbar" 
+                        :class="{ active: $store.layout.isOpenSidebarFilter }"
+                    >
+                        @if ($categories->isNotEmpty())
+                            <div class="browse-categories-wrap">
+                                <h4 class="section-title">
+                                    {{ trans('storefront::products.browse_categories') }}
+                                </h4>
 
-                            @include('storefront::public.products.index.browse_categories')
-                        </div>
-                    @endif
-                    
-                    @include('storefront::public.products.index.filter')
+                                @include('storefront::public.products.index.browse_categories')
+                            </div>
+                        @endif
+                        
+                        @include('storefront::public.products.index.filter')
+                    </div>
+
                     @include('storefront::public.products.index.latest_products')
                 </div>
 
