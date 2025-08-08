@@ -2,10 +2,11 @@
 
 namespace FleetCart\Providers;
 
-use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Jackiedo\DotenvEditor\DotenvEditorServiceProvider;
 
@@ -34,6 +35,21 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
 
         if (Request::secure()) {
+            URL::forceScheme('https');
+        }
+
+        // Get full URL from current request
+        $currentUrl = request()->getSchemeAndHttpHost();
+
+        // Override the config value
+        config(['app.url' => $currentUrl]);
+
+        // Optionally force URL generator to use this base URL
+        URL::forceRootUrl($currentUrl);
+        Config::set('filesystems.disks.public_storage.url', "{$currentUrl}/storage");
+
+        // If using HTTPS behind a proxy/load balancer
+        if (request()->isSecure()) {
             URL::forceScheme('https');
         }
     }

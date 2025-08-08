@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Http;
 class ZcreditPayment
 {
     protected array $config;
-    public function __construct(array $config){
+
+    public function __construct(array $config)
+    {
         $this->config = $config;
     }
 
@@ -95,6 +97,8 @@ class ZcreditPayment
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
         ])->post('https://pci.zcredit.co.il/webcheckout/api/WebCheckout/CreateSession', $payload);
+
+//        dd($response->body());
 
         // Return as array (or throw error if needed)
         return $response->json();
