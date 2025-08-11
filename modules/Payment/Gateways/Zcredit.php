@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Modules\Order\Entities\Order;
 use Modules\Payment\GatewayInterface;
 use Modules\Payment\Libraries\Zcredit\ZcreditPayment;
-use Modules\Payment\Responses\StripeResponse;
 use Modules\Payment\Responses\ZcreditResponse;
 use Stripe\Coupon;
 use Stripe\Exception\ApiErrorException;
@@ -30,26 +29,62 @@ class Zcredit implements GatewayInterface
     public function purchase(Order $order, Request $request): ZcreditResponse
     {
 
-//        dd($order->products);
         $supported_currencies = ['USD', 'EUR', 'NIS', 'ILS'];
 
         if (!in_array(currency(), $supported_currencies)) {
             throw new Exception(trans('payment::messages.currency_not_supported'));
         }
+
         $totalLineAmount = $order->products->sum(function ($product) {
             return $product->line_total->amount();
         });
-        $totalLineAmount = number_format($totalLineAmount, 2, '.', '');
-
-        $shippingCost = $order->shipping_cost->amount();
         $totalDiscount = $order->discount->amount();
 
-        $distributedDiscount = 0;
-        $distributedShipping = 0;
+        $items = [];
 
-        $lastIndex = $order->products->count() - 1;
+// Products
+        foreach ($order->products as $orderProduct) {
+            $lineAmount = $orderProduct->line_total->amount();
+            $discountShare = ($totalLineAmount > 0)
+                ? ($lineAmount / $totalLineAmount) * $totalDiscount
+                : 0;
 
-        $items = $this->buildGatewayItems($order, false);
+            $finalLineTotal = $lineAmount - $discountShare;
+            $qty = max(1, (int) $orderProduct->qty); // prevent /0
+
+            // Per-unit price so gateway math is correct
+            $unitPrice = $finalLineTotal / $qty;
+
+            $items[] = [
+                "Amount" => number_format($unitPrice, 2, '.', ''), // per-unit
+                "Currency" => currency(),
+                "Name" => $orderProduct->product->name ?? 'N/A',
+                "Description" => $orderProduct->product->sku ?? '',
+                "Quantity" => $qty,
+                "Image" => ($orderProduct->product->variant && $orderProduct->product->variant->base_image->id)
+                    ? $orderProduct->product->variant->base_image?->path
+                    : $orderProduct->product->base_image?->path ?? asset('build/assets/image-placeholder.png'),
+                "IsTaxFree" => "false",
+                "AdjustAmount" => "false",
+            ];
+        }
+
+// Shipping (if exists)
+        $shippingCost = $order->shipping_cost->amount();
+        if ($shippingCost > 0) {
+            $items[] = [
+                "Amount" => number_format($shippingCost, 2, '.', ''),
+                "Currency" => currency(),
+                "Name" => "Shipping",
+                "Description" => "Shipping Cost",
+                "Quantity" => 1,
+                "Image" => asset('build/assets/delivery-truck.png'),
+                "IsTaxFree" => "false",
+                "AdjustAmount" => "false",
+            ];
+        }
+
+//        $items = $this->buildGatewayItems($order, false);
 
         /*$items = $order->products->map(function ($orderProduct, $index) use (
             $totalLineAmount,
@@ -133,8 +168,17 @@ class Zcredit implements GatewayInterface
             ],
         ];
 
+        $supportedLocales = ['He', 'En', 'Ru'];
+
+        $currentLocale = ucfirst(locale());
+
+        if (!in_array($currentLocale, $supportedLocales, true)) {
+            $currentLocale = 'En';
+        }
+
+
         $payloads = [
-            'Local' => ucfirst(locale()),
+            'Local' => $currentLocale,
             'UniqueId' => implode('-', [$order->id, Carbon::now()->timestamp]),
             'SuccessUrl' => $this->getRedirectUrl($order),
             'CancelUrl' => $this->getPaymentFailedUrl($order),
@@ -150,6 +194,18 @@ class Zcredit implements GatewayInterface
         $response = $zcredit->createZCreditSession($payloads);
         return new ZcreditResponse($order, $response);
 
+    }
+
+    private function getRedirectUrl($order)
+    {
+//        dd($order->id);
+        return route('checkout.complete.store',
+            ['orderId' => $order->id, 'paymentMethod' => 'zcredit', 'reference' => uniqid('zcredit_')]);
+    }
+
+    private function getPaymentFailedUrl($order)
+    {
+        return route('checkout.payment_canceled.store', ['orderId' => $order->id, 'paymentMethod' => 'zcredit']);
     }
 
     function buildGatewayItems($order, $use_unit_amounts = true)
@@ -231,20 +287,9 @@ class Zcredit implements GatewayInterface
         return $items;
     }
 
-    private function getRedirectUrl($order)
+    public function complete(Order $order): ZcreditResponse
     {
-        return route('checkout.complete.store',
-            ['orderId' => $order->id, 'paymentMethod' => 'zcredit', 'reference' => uniqid('stripe_')]);
-    }
-
-    private function getPaymentFailedUrl($order)
-    {
-        return route('checkout.payment_canceled.store', ['orderId' => $order->id, 'paymentMethod' => 'zcredit']);
-    }
-
-    public function complete(Order $order): StripeResponse
-    {
-        return new StripeResponse($order, request());
+        return new ZcreditResponse($order, request());
     }
 
     /**

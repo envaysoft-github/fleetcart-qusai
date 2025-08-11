@@ -14,6 +14,8 @@ class ZcreditResponse extends GatewayResponse implements HasTransactionReference
 
     public function __construct(Order $order, array|object $clientResponse)
     {
+//        dd($clientResponse);
+//        dd($order->id);
         $this->order = $order;
         $this->clientResponse = $clientResponse;
     }
@@ -21,12 +23,14 @@ class ZcreditResponse extends GatewayResponse implements HasTransactionReference
 
     public function getOrderId()
     {
+//        dd($this->order->id);
         return $this->order->id;
     }
 
 
     public function getTransactionReference()
     {
+//        dd($this->clientResponse);
         return $this->clientResponse->query('reference');
     }
 
@@ -34,7 +38,7 @@ class ZcreditResponse extends GatewayResponse implements HasTransactionReference
     public function toArray()
     {
 
-            $array['redirectUrl'] = $this->clientResponse['Data']['SessionUrl'];
+        $array['redirectUrl'] = $this->clientResponse['Data']['SessionUrl'];
 
 
         return $array;

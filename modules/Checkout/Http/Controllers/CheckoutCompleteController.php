@@ -3,15 +3,15 @@
 namespace Modules\Checkout\Http\Controllers;
 
 use Exception;
-use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
-use Modules\Order\Entities\Order;
-use Modules\Payment\Facades\Gateway;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Modules\Checkout\Events\OrderPlaced;
 use Modules\Checkout\Services\OrderService;
+use Modules\Order\Entities\Order;
+use Modules\Payment\Facades\Gateway;
 use Modules\Payment\Libraries\Bkash\BkashService;
 use Modules\Payment\Libraries\Nagad\NagadPayment;
 
@@ -20,13 +20,14 @@ class CheckoutCompleteController
     /**
      * Store a newly created resource in storage.
      *
-     * @param int $orderId
-     * @param OrderService $orderService
+     * @param  int  $orderId
+     * @param  OrderService  $orderService
      *
      * @return RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function store(int $orderId, OrderService $orderService)
     {
+//        dd($orderId);
         if (request()->query('paymentMethod') === 'iyzico') {
             try {
                 $request = new \Iyzipay\Request\RetrieveCheckoutFormRequest();
@@ -50,10 +51,12 @@ class CheckoutCompleteController
                 $response = \Iyzipay\Model\CheckoutForm::retrieve($request, $options);
 
                 if ($response->getPaymentStatus() !== 'SUCCESS') {
-                    return redirect()->route('checkout.payment_canceled.store', ['orderId' => $orderId, 'paymentMethod' => request()->query('paymentMethod')]);
+                    return redirect()->route('checkout.payment_canceled.store',
+                        ['orderId' => $orderId, 'paymentMethod' => request()->query('paymentMethod')]);
                 }
             } catch (Exception $e) {
-                return redirect()->route('checkout.payment_canceled.store', ['orderId' => $orderId, 'paymentMethod' => request()->query('paymentMethod')]);
+                return redirect()->route('checkout.payment_canceled.store',
+                    ['orderId' => $orderId, 'paymentMethod' => request()->query('paymentMethod')]);
             }
         }
 
@@ -97,7 +100,7 @@ class CheckoutCompleteController
 
                 return redirect()->route('checkout.complete.show');
             } catch (\Exception $e) {
-                Log::error('Bkash callback error: ' . $e->getMessage());
+                Log::error('Bkash callback error: '.$e->getMessage());
 
                 return $redirectToCancel;
             }
@@ -106,7 +109,8 @@ class CheckoutCompleteController
         if (request()->query('paymentMethod') === 'nagad') {
             try {
                 if (!request()->has('order_id') || !request()->has('payment_ref_id')) {
-                    return redirect()->route('checkout.payment_canceled.store', ['orderId' => $orderId, 'paymentMethod' => request()->query('paymentMethod')]);
+                    return redirect()->route('checkout.payment_canceled.store',
+                        ['orderId' => $orderId, 'paymentMethod' => request()->query('paymentMethod')]);
                 }
 
                 $paymentRefId = request()->payment_ref_id;
@@ -123,10 +127,12 @@ class CheckoutCompleteController
                 $response = $nagadPayment->verify($paymentRefId);
 
                 if ($response->statusCode != "000" || $response->status != "Success") {
-                    return redirect()->route('checkout.payment_canceled.store', ['orderId' => $orderId, 'paymentMethod' => request()->query('paymentMethod')]);
+                    return redirect()->route('checkout.payment_canceled.store',
+                        ['orderId' => $orderId, 'paymentMethod' => request()->query('paymentMethod')]);
                 }
             } catch (Exception $e) {
-                return redirect()->route('checkout.payment_canceled.store', ['orderId' => $orderId, 'paymentMethod' => request()->query('paymentMethod')]);
+                return redirect()->route('checkout.payment_canceled.store',
+                    ['orderId' => $orderId, 'paymentMethod' => request()->query('paymentMethod')]);
             }
         }
 
